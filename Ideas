@@ -1,0 +1,37 @@
+Chunks
+------
+size could be 64 x 64
+1 current chunk, 9 loaded chunk
+loaded chunks varies with the current chunk
+
+two options :
+load or generate
+if generate :
+    check with the border of current, cause it needs to be flawless.
+    Easy method => copy the border. So no weird things. Avoid non-blocs entities on the sides (futur update possible)
+    once current move, free other chunks by saving them into files.
+    Blocs must have an idea.
+    Exemple of tree :
+    12 12 12
+    12 12 12
+       45
+       45
+       45
+    Easy enough.
+
+Ids : B001 for blocs
+      I001 for items
+
+Chunks must have an index as well. So we can now if they exist or not
+example :
+(-2, 1)  (-1, 1), ( 0, 1)
+(-2, 0) ... ..... . ..
+
+one file by chunck => the title is the ID like => -2,1.chunck
+h_id,w_id.chunck
+
+in the file, the id of the blocks
+And a header with infos for the future (like has_a_cave=true or hasWater...)
+
+when saving, add to a file to keep track of the existing chunks.
+
