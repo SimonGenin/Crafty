@@ -14,8 +14,10 @@ public class Chunk {
 
     private Bloc[][] blocs;
 
-    public Chunk() {
+    public Chunk(int widthIndex, int heightIndex) {
         blocs = new Bloc[CHUNK_HEIGHT][CHUNK_WIDTH];
+        this.widthIndex = widthIndex;
+        this.heightIndex = heightIndex;
     }
 
     public void genTestChunk() {

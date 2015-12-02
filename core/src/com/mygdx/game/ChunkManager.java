@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mygdx.game.debugging.Debug;
 import com.mygdx.game.entities.Bloc;
 
@@ -22,7 +23,8 @@ public class ChunkManager {
     File idsFile;
     FileHandle idsFileHandle;
 
-    FileHandle chunksFileHandle;
+    FileHandle chunksSaveFileHandle;
+    FileHandle chunksLoadFileHandle;
 
     public ChunkManager() {
         idsFileHandle = Gdx.files.internal("files/save/chunks.ids");
@@ -30,8 +32,59 @@ public class ChunkManager {
         existingChunkIDs = getExistingChunkIDs();
     }
 
-    public void loadChunk(int h_id, int w_id) {
+    public Chunk loadChunk(int h_id, int w_id) {
 
+        // the chunk id
+        int[] id = {w_id, h_id};
+
+        // If it doesn't exist yet, let's delegate
+        // the work to a generator
+        if (!existingChunkIDs.contains(id)) {
+            return generateNewChunk(id);
+        }
+
+        // find the file. It must exists if the id is in the list
+        chunksLoadFileHandle = Gdx.files.internal("files/save/chunks/" + id[0] + "," + id[1] + ".chunk");
+
+        // Let's check anyway if the file exists
+        if (!chunksLoadFileHandle.exists()) {
+            return generateNewChunk(id);
+        }
+
+        // Read the entire file
+        String chunkString = chunksLoadFileHandle.readString();
+
+        // Get the lines
+        String[] blocLines = chunkString.split("[\\r\\n]+");
+
+        String blocsId[][] = new String[Chunk.CHUNK_WIDTH][Chunk.CHUNK_HEIGHT];
+        for (int i = 0; i < blocLines.length; i++) {
+            blocsId[i] = blocLines[i].split(" ");
+        }
+
+        Chunk chunk = new Chunk(w_id, h_id);
+
+        for (int i = 0; i < blocsId.length; i++) {
+            for (int j = 0; j < blocsId[i].length; j++) {
+                chunk.blocs()[i][j] = Bloc.createBlocByID(blocsId[i][j]);
+            }
+        }
+
+        return chunk;
+    }
+
+    private Chunk generateNewChunk(int[] id) {
+        Sprite dirt = TextureManager.getInstance().getSprite("dirt");
+        Chunk newChunk = new Chunk(id[0], id[1]);
+        for (int i = 0; i < Chunk.CHUNK_HEIGHT; i++) {
+            for (int j = 0; j < Chunk.CHUNK_WIDTH; j++) {
+                newChunk.blocs()[i][j] = new Bloc("dirt", dirt, "B001");
+            }
+        }
+
+        existingChunkIDs.add(id);
+
+        return newChunk;
     }
 
     /**
@@ -44,15 +97,15 @@ public class ChunkManager {
         int w_id = chunk.widthIndex;
 
         // Get the file
-        chunksFileHandle = Gdx.files.internal("files/save/chunks/" + w_id + "," + h_id);
+        chunksSaveFileHandle = Gdx.files.internal("files/save/chunks/" + w_id + "," + h_id + ".chunk");
 
         // Iterate over every bloc and write its ID
         Bloc[][] blocs = chunk.blocs();
         for (int i = 0; i < blocs.length; i++) {
             for (int j = 0; j < blocs[i].length; j++) {
-                chunksFileHandle.writeString(blocs[i][j].getID() + " ", true);
+                chunksSaveFileHandle.writeString(blocs[i][j].getID() + " ", true);
             }
-            chunksFileHandle.writeString("\n", true);
+            chunksSaveFileHandle.writeString("\n", true);
         }
 
 

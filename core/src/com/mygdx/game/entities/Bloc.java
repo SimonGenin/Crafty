@@ -1,6 +1,7 @@
 package com.mygdx.game.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.mygdx.game.TextureManager;
 
 public class Bloc extends Entity {
 
@@ -16,5 +17,9 @@ public class Bloc extends Entity {
 
     public String getID() {
         return id;
+    }
+
+    public static Bloc createBlocByID(String id) {
+        return new Bloc("dirt", TextureManager.getInstance().getSprite("dirt"), "B001");
     }
 }
