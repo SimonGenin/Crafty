@@ -3,15 +3,15 @@ package com.mygdx.game;
 
 public class World {
 
-    private Chunck[][] loadedChunks;
-    private ChunkLoader chunkLoader;
+    private Chunk[][] loadedChunks;
+    private ChunkManager chunkManager;
 
     public World() {
-        chunkLoader = new ChunkLoader();
+        chunkManager = new ChunkManager();
         loadedChunks = null;
     }
 
-    public Chunck getChunk(int h_id, int w_id) {
+    public Chunk getChunk(int h_id, int w_id) {
 
         return null;
     }

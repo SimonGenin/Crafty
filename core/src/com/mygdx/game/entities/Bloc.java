@@ -6,12 +6,15 @@ public class Bloc extends Entity {
 
     private String name;
     public Sprite sprite;
-    private int hardness;
+    private String id;
 
-    public Bloc(String name, Sprite sprite, int hardness) {
+    public Bloc(String name, Sprite sprite, String id) {
         this.name = name;
         this.sprite = sprite;
-        this.hardness = hardness;
+        this.id = id;
     }
 
+    public String getID() {
+        return id;
+    }
 }

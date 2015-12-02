@@ -22,10 +22,13 @@ public class Crafty extends ApplicationAdapter {
 
 		textureManager  = TextureManager.getInstance();
 		Sprite s = textureManager.getSprite("dirt");
-		c = new Bloc("dirt", s, 1);
+		c = new Bloc("dirt", s, "B001");
 
-		ChunkLoader loader = new ChunkLoader();
+		ChunkManager manager = new ChunkManager();
+		Chunk chunk = new Chunk();
+		chunk.genTestChunk();
 
+		manager.saveChunk(chunk);
 
 	}
 
