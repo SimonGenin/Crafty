@@ -22,4 +22,9 @@ public class Bloc extends Entity {
     public static Bloc createBlocByID(String id) {
         return new Bloc("dirt", TextureManager.getInstance().getSprite("dirt"), "B001");
     }
+
+
+    public void update() {
+
+    }
 }

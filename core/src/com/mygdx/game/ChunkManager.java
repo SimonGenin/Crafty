@@ -3,11 +3,13 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.mygdx.game.debugging.Debug;
 import com.mygdx.game.entities.Bloc;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChunkManager {
 
@@ -37,10 +39,14 @@ public class ChunkManager {
         // the chunk id
         int[] id = {w_id, h_id};
 
+        Chunk chunk = new Chunk(w_id, h_id);
+
         // If it doesn't exist yet, let's delegate
         // the work to a generator
         if (!existingChunkIDs.contains(id)) {
-            return generateNewChunk(id);
+            chunk = generateNewChunk(id);
+            chunk.prepare();
+            return chunk;
         }
 
         // find the file. It must exists if the id is in the list
@@ -48,7 +54,10 @@ public class ChunkManager {
 
         // Let's check anyway if the file exists
         if (!chunksLoadFileHandle.exists()) {
-            return generateNewChunk(id);
+            Debug.i("Chunk (" + id[0] + "," +id[1] + ") doesn't exist ! Generating...", TAG);
+            chunk = generateNewChunk(id);
+            chunk.prepare();
+            return chunk;
         }
 
         // Read the entire file
@@ -62,7 +71,6 @@ public class ChunkManager {
             blocsId[i] = blocLines[i].split(" ");
         }
 
-        Chunk chunk = new Chunk(w_id, h_id);
 
         for (int i = 0; i < blocsId.length; i++) {
             for (int j = 0; j < blocsId[i].length; j++) {
@@ -70,6 +78,8 @@ public class ChunkManager {
                     chunk.blocs()[i][j] = Bloc.createBlocByID(blocsId[i][j]);
             }
         }
+
+        chunk.prepare();
 
         return chunk;
     }
@@ -88,6 +98,12 @@ public class ChunkManager {
         return newChunk;
     }
 
+    public void saveChunks(List<Chunk> chunkList) {
+        for (Chunk chunk : chunkList) {
+            saveChunk(chunk);
+        }
+    }
+
     /**
      * Save a chunk to a file with a name such as h_id,w_id.chunk
      * Update the list of ids.
@@ -98,26 +114,28 @@ public class ChunkManager {
         int w_id = chunk.widthIndex;
 
         // Get the file
-        chunksSaveFileHandle = Gdx.files.internal("files/save/chunks/" + w_id + "," + h_id + ".chunk");
+        chunksSaveFileHandle = Gdx.files.local("files/save/chunks/" + w_id + "," + h_id + ".chunk");
 
         // Iterate over every bloc and write its ID
         Bloc[][] blocs = chunk.blocs();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < blocs.length; i++) {
             for (int j = 0; j < blocs[i].length; j++) {
                 if (blocs[i][j] == null)
-                    chunksSaveFileHandle.writeString("NONE" + " ", true);
+                    sb.append("NONE" + " ");
                 else
-                    chunksSaveFileHandle.writeString(blocs[i][j].getID() + " ", true);
+                    sb.append(blocs[i][j].getID() + " ");
             }
-            chunksSaveFileHandle.writeString("\n", true);
+            sb.append("\n");
         }
 
+        // Write all the content to the file
+        chunksSaveFileHandle.writeString(sb.toString(), false);
 
         // Add the id to the list of ids if not already there
         int[] id = {w_id, h_id};
         if (!existingChunkIDs.contains(id))
             existingChunkIDs.add(id);
-
     }
 
     /**

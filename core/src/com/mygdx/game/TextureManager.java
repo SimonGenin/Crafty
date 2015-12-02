@@ -8,6 +8,7 @@ public class TextureManager {
 
     private static TextureManager instance;
     private TextureAtlas atlas;
+    public static final int TEXTURE_SIZE = 128; // px
 
     private TextureManager() {
         atlas = new TextureAtlas(Gdx.files.internal("textures/textures.pack"));

@@ -36,6 +36,17 @@ And a header with infos for the future (like has_a_cave=true or hasWater...)
 when saving, add to a file to keep track of the existing chunks.
 
 Bloc system :
-One bloc + replica ? or new Bloc ?
-Second is weird because of the id.
-Blocs.DIRT
+Blocs.DIRT = new Bloc()...
+and a method to get a clone
+
+Loading the relevant chuncks at start
+Let's assume we start with a position such as :
+c_i 0 0 for chunk index
+v -30 vertical position in pixel
+h 100 horizontal position in pixel
+
+to load the right chunks, we only need the c_i
+
+Movement
+--------
+Create a method to move, an update the cam position AND notify the world object
