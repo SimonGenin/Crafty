@@ -66,7 +66,8 @@ public class ChunkManager {
 
         for (int i = 0; i < blocsId.length; i++) {
             for (int j = 0; j < blocsId[i].length; j++) {
-                chunk.blocs()[i][j] = Bloc.createBlocByID(blocsId[i][j]);
+                if (blocsId[i][j]!= "NONE")
+                    chunk.blocs()[i][j] = Bloc.createBlocByID(blocsId[i][j]);
             }
         }
 
@@ -103,7 +104,10 @@ public class ChunkManager {
         Bloc[][] blocs = chunk.blocs();
         for (int i = 0; i < blocs.length; i++) {
             for (int j = 0; j < blocs[i].length; j++) {
-                chunksSaveFileHandle.writeString(blocs[i][j].getID() + " ", true);
+                if (blocs[i][j] == null)
+                    chunksSaveFileHandle.writeString("NONE" + " ", true);
+                else
+                    chunksSaveFileHandle.writeString(blocs[i][j].getID() + " ", true);
             }
             chunksSaveFileHandle.writeString("\n", true);
         }

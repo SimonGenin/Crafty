@@ -11,7 +11,7 @@ if generate :
     Easy method => copy the border. So no weird things. Avoid non-blocs entities on the sides (futur update possible)
     once current move, free other chunks by saving them into files.
     Blocs must have an idea.
-    Exemple of tree :
+    Example of tree :
     12 12 12
     12 12 12
        45
@@ -35,3 +35,7 @@ And a header with infos for the future (like has_a_cave=true or hasWater...)
 
 when saving, add to a file to keep track of the existing chunks.
 
+Bloc system :
+One bloc + replica ? or new Bloc ?
+Second is weird because of the id.
+Blocs.DIRT
